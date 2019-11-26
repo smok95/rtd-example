@@ -1,0 +1,197 @@
+// rtdexam.idl : IDL source for rtd-exam
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (rtdexam.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+/*	### RTD 관련 정보
+
+	* How to set up and use the RTD function in Excel 
+	https://docs.microsoft.com/en-us/office/troubleshoot/excel/setup-up-realtimedata-function
+
+	* How to create to RealTimeData server for Excel
+	https://docs.microsoft.com/en-us/office/troubleshoot/office-developer/create-realtimedata-server-in-excel
+
+	* IRtdServer Interface
+	https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.irtdserver?view=excel-pia
+
+	* Excel: Creating an RTD Server with C#
+	https://bolg.learningtree.com/excel-creating-rtd-server-c
+
+	* Guide to Writing Custom Functions in Excel: Part 3, C++ RTD add-in
+	https://codeproject.com/Articles/245265/Guide-to-Writing-Custom-Functions-in-Excel-Part
+
+	* IRTDUpdateEvent, IRtdServer : 엑셀에서 RTD용으로 정의한 인터페이스이기 때문에 메서드, iid 등의 변경을 해서는 안된다.
+	* Topic : 엑셀에서 RTD server에 정보를 요청하는데 이를 topic라고 부른다. 
+			엑셀 셀에서 RTD함수를 호출하여 데이터를 요청하는데 이때 요청하는 데이터가 동일한 경우 토픽도 동일하며,
+			요청하는 데이터가 다른 경우 토픽도 달라진다.
+	* Topic ID : topic에 부여한 식별번호(유일키)
+
+	* Topic의 이해
+
+			번호	A								B								C
+			-------	------------------------------	------------------------------	------------------------------
+			1		=RTD("progid",,"영국시각")		=RTD("progid",,"영국시각")		=RTD("progid",,"한국시각")
+
+			위와 같이 A1셀과 B1셀은 요청값이 '영국시각'으로 동일하기 때문에 토픽ID 또한 동일하다.
+			C1셀의 경우에는 '한국시각'으로 요청값이 다르기 때문에 토픽ID 또한 다르다.	
+*/
+
+
+/*
+@name		IRTDUpdateEvent
+@brief		Represents real-time data update events.
+@remarks	To instantiate or to return an IRTDUpdateEvent object, declare a variable as an IRTDUpdateEvent object, and then use that variable as a callback object.
+*/
+[
+  odl,
+  uuid(A43788C1-D91B-11D3-8F39-00C04F3651B8),
+  helpcontext(0x0007a120),
+  dual,
+  oleautomation
+]
+interface IRTDUpdateEvent : IDispatch {
+
+	/*
+	@brief		The real-time data(RTD) server uses this method to notify Microsoft Excel that new data has been received.
+	@param		
+	@return	
+	@remarks
+	*/
+    [id(0x0000000a), helpcontext(0x0007a121)]
+    HRESULT UpdateNotify();
+
+	/*
+	@brief		Returns or sets an Integer for the interval between updates for real-time data. Read/write.
+	@param		
+	@return		
+	@remarks	Setting th HeartbeatInterval property to -1 will result in the Heartbeat() method not being called.
+				Note. The heartbeat interval cannot be set below 15,000 milliseconds due to the standard 15-second time out.
+	*/
+    [id(0x0000000b), propget, helpcontext(0x0007a122)]
+    HRESULT HeartbeatInterval([out, retval] long* plRetVal);
+    [id(0x0000000b), propput, helpcontext(0x0007a122)]
+    HRESULT HeartbeatInterval([in] long plRetVal);
+
+	/*
+	@brief		Instructs the real-time data server(RTD) to disconnect from the specified IRTDUpdateEvent object.
+	@param		
+	@return	
+	@remarks
+	*/
+    [id(0x0000000c), helpcontext(0x0007a123)]
+    HRESULT Disconnect();
+};
+
+[
+  odl,
+  uuid(EC0E6191-DB51-11D3-8F3E-00C04F3651B8),
+  helpcontext(0x0007a124),
+  dual,
+  oleautomation
+]
+interface IRtdServer : IDispatch {
+	/*
+	@brief		The ServerStart method is called immediately after a real-time data server is instantiated. Negative value or zero indicates failure to start the server;
+				positive value indicates success.
+	@param		CallbackObject	: Required IRTDUpdateEvent object. The callback object.
+	@returns	pfRes
+	@remark		Called when Excel requests the first RTD topic for the server. ServerStart should return a 1 on success, and a 
+				negative value or 0 on failure. The first parameter of the ServerStart method is a callback object that the RealTimeData server
+				uses to notify Excel when it should gather updates from the RealTimeData server.
+				1번째 RTD topic을 요청할때 호출되는 메서드로 정상처리한 경우 1을 처리에 실패한 경우에는 0 이하의 값을 리턴한다.
+				1번째 인자인 callbackObject(IRTDUpdateEvent)는 콜백객체로 RTD서버에서 실시간데이터가 갱신되는 경우, 
+				이를 Excel에 알려 데이터를 갱신하도록 하는 역할을 한다.	
+	*/
+    [id(0x0000000a), helpcontext(0x0007a125)]
+    HRESULT ServerStart(
+                    [in] IRTDUpdateEvent* CallbackObject, 
+                    [out, retval] long* pfRes);
+
+	/*
+	@brief		Adds new topics from a real-time data server. The ConnectData method is called when a file is opened that contains real-time data functions
+				or when a user types in a new fomular which contains the RTD function.
+	@param		TopicID		: Required Integer, A unique value, assigned by Microsoft Excel, which identifies the topic.
+	@param		Strings		: Required Object. A single-dimensional array of strings identifying the topic.
+	@param		GetNewValues: Required Boolean. True to determine if new values are to be acquired.
+								Cell에 이미 RTD값(리턴값)이 설정된 경우, GetNewValues를 True로 설정하면 다시 새 RTD값으로 설정하고
+								False로 하면 이전에 설정된 값을 그대로 사용한다.
+								단, 해당 동작은 저장된 엑셀파일을 다시 열때에만 동작하는 것으로 확인되었음.
+								즉, 저장된 엑셀파일을 다시 열때마다 RTD값이 갱신이 되어야 하는 경우에는 반드시 해당 값을 True로 설정해야 한다.
+	@returns	pvarOut
+	@remarks	Called whenever Excel requests a new RTD topic from the RealTimeData server.	
+				엑셀에서 새 토픽을 요청할 때마다 호출된다.
+	*/
+    [id(0x0000000b), helpcontext(0x0007a126)]
+    HRESULT ConnectData(
+                    [in] long TopicID, 
+                    [in] SAFEARRAY(VARIANT)* Strings, 
+                    [in, out] VARIANT_BOOL* GetNewValues, 
+                    [out, retval] VARIANT* pvarOut);
+	/*
+	@brief		This method is called by Microsoft Excel to get new data.
+	@param		TopicCount	: Required Integer. The RTD server must change the value of the TopicCount to the number of elements in the array returned.
+	@returns	parrayOut
+	@remarks	The data returned to Excel is an Object containing a two-dimensional array. The first dimension represents the list of topic IDs. 
+				The second dimension represents the values associated with the topic IDs.	
+
+				Called when Excel is requesting a refresh on topics. RefreshData is called after the server notifies Excel that updates exist,
+				and it returns a count of the topics to update along with the topic id and value for each topic.
+				Excel에서 RTD데이터(topics)를 갱신하려할때 호출된다. 
+				이는 RTD서버에서 Excel에 실시간데이터가 갱신됨을 알리고, Excel에서 다시 RTD서버에 갱신된 데이터를 달라고 요청하는 구조이다.
+	*/
+    [id(0x0000000c), helpcontext(0x0007a127)]
+    HRESULT RefreshData(
+                    [in, out] long* TopicCount, 
+                    [out, retval] SAFEARRAY(VARIANT)* parrayOut);
+
+	/*	
+	@brief		Notifies a real-time data(RTD) server application that a topic is no longer in use.
+	@param		TopicID	: Required Integer. A unique value assigned to the topic assigned by Microsoft Excel.
+	@return		
+	@remarks	Called whenever Excel no longer requires a specific topic.
+				특정 토픽이 더 이상 필요하지 않을 때 호출된다. 즉, 엑셀에서 RTD셀이 없어질 때(더 이상 값을 표시할 필요가 없을 때) 호출된다.
+	*/
+    [id(0x0000000d), helpcontext(0x0007a128)]
+    HRESULT DisconnectData([in] long TopicID);
+
+	/*	
+	@brief		Determines if the real-time data server is still active. Zero or negative number indicates failure; a positive number indicates that the server is active.	
+	@returns	pfRes
+	@remarks	Called by Excel if a given interval has elapsed since the last time Excel was notified of updates from the RealTimeData server.
+				마지막 업데이트가 발생한 이후에 지정한 시간이 경과하면 해당 메서드가 호출됩니다.		
+	*/
+    [id(0x0000000e), helpcontext(0x0007a129)]
+    HRESULT Heartbeat([out, retval] long* pfRes);
+
+	/*
+	@brief		Terminates the connection to the real-time data server.
+	@param		
+	@return		
+	@remarks	Called when Excel no longer requires RTD topics from the RealTimeData Server.
+				Excel에서 더 이상 RTD를 사용하지 않을때(RTD서버가 필요없을때) 호출된다.
+	*/
+    [id(0x0000000f), helpcontext(0x0007a12a)]
+    HRESULT ServerTerminate();
+};
+
+
+[
+	uuid(5E4EF894-4DC4-414A-A4FC-014E3953A824),
+	version(1.0),
+]
+library rtdexamLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(D61F799E-9F33-420F-B9AC-5D3D221822CA)		
+	]
+	coclass RTDClock
+	{
+		[default] interface IRtdServer;
+	};
+};
+

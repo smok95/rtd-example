@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rtd-exam", "rtd-exam.vcxproj", "{5100888E-102F-4DD1-AD2E-088BD54C09FA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rtd-examPS", "rtd-examPS.vcxproj", "{D600CD4B-0369-4CD1-8F9B-04C639028EB5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5100888E-102F-4DD1-AD2E-088BD54C09FA} = {5100888E-102F-4DD1-AD2E-088BD54C09FA}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5100888E-102F-4DD1-AD2E-088BD54C09FA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5100888E-102F-4DD1-AD2E-088BD54C09FA}.Debug|Win32.Build.0 = Debug|Win32
+		{5100888E-102F-4DD1-AD2E-088BD54C09FA}.Release|Win32.ActiveCfg = Release|Win32
+		{5100888E-102F-4DD1-AD2E-088BD54C09FA}.Release|Win32.Build.0 = Release|Win32
+		{D600CD4B-0369-4CD1-8F9B-04C639028EB5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D600CD4B-0369-4CD1-8F9B-04C639028EB5}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

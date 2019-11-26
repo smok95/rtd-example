@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{3946b08c-ce7e-41f7-b654-12af7df04d8a}</UniqueIdentifier>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="RTDClock">
+      <UniqueIdentifier>{77092870-b7a7-4dc1-a12b-635ca7123f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{ebf6ae6a-3ce3-4474-ba82-00f3b05ebbbe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="rtdexam_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="rtd-exam.cpp" />
+    <ClCompile Include="RTDClock\RTDClock.cpp">
+      <Filter>RTDClock</Filter>
+    </ClCompile>
+    <ClCompile Include="util\util.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="RTDClock\RTDUpdateThread.cpp">
+      <Filter>RTDClock</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rtdexam_i.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="RTDClock\RTDClock.h">
+      <Filter>RTDClock</Filter>
+    </ClInclude>
+    <ClInclude Include="util\util.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="RTDClock\RTDUpdateThread.h">
+      <Filter>RTDClock</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rtd-exam.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rtd-exam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="rtd-exam.def" />
+    <None Include="RTDClock.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="rtdexam.idl" />
+  </ItemGroup>
+</Project>

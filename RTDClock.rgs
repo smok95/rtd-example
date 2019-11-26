@@ -1,0 +1,26 @@
+HKCR
+{
+	RtdExam.RTDClock.1 = s 'RTDClock Class'
+	{
+		CLSID = s '{D61F799E-9F33-420F-B9AC-5D3D221822CA}'
+	}
+	RtdExam.RTDClock = s 'RTDClock Class'
+	{		
+		CurVer = s 'RtdExam.RTDClock.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D61F799E-9F33-420F-B9AC-5D3D221822CA} = s 'RTDClock Class'
+		{
+			ProgID = s 'RtdExam.RTDClock.1'
+			VersionIndependentProgID = s 'RtdExam.RTDClock'
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{5E4EF894-4DC4-414A-A4FC-014E3953A824}'
+			Version = s '1.0'
+		}
+	}
+}
