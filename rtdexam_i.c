@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0555 */
-/* at Tue Nov 26 15:31:11 2019
+/* at Sat Jan 25 14:02:24 2020
  */
 /* Compiler settings for rtdexam.idl:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 7.00.0555 
