@@ -7,7 +7,7 @@
 import "oaidl.idl";
 import "ocidl.idl";
 
-/*	### RTD °ü·Ã Á¤º¸
+/*	### RTD ê´€ë ¨ ì •ë³´
 
 	* How to set up and use the RTD function in Excel 
 	https://docs.microsoft.com/en-us/office/troubleshoot/excel/setup-up-realtimedata-function
@@ -24,20 +24,21 @@ import "ocidl.idl";
 	* Guide to Writing Custom Functions in Excel: Part 3, C++ RTD add-in
 	https://codeproject.com/Articles/245265/Guide-to-Writing-Custom-Functions-in-Excel-Part
 
-	* IRTDUpdateEvent, IRtdServer : ¿¢¼¿¿¡¼­ RTD¿ëÀ¸·Î Á¤ÀÇÇÑ ÀÎÅÍÆäÀÌ½ºÀÌ±â ¶§¹®¿¡ ¸Ş¼­µå, iid µîÀÇ º¯°æÀ» ÇØ¼­´Â ¾ÈµÈ´Ù.
-	* Topic : ¿¢¼¿¿¡¼­ RTD server¿¡ Á¤º¸¸¦ ¿äÃ»ÇÏ´Âµ¥ ÀÌ¸¦ topic¶ó°í ºÎ¸¥´Ù. 
-			¿¢¼¿ ¼¿¿¡¼­ RTDÇÔ¼ö¸¦ È£ÃâÇÏ¿© µ¥ÀÌÅÍ¸¦ ¿äÃ»ÇÏ´Âµ¥ ÀÌ¶§ ¿äÃ»ÇÏ´Â µ¥ÀÌÅÍ°¡ µ¿ÀÏÇÑ °æ¿ì ÅäÇÈµµ µ¿ÀÏÇÏ¸ç,
-			¿äÃ»ÇÏ´Â µ¥ÀÌÅÍ°¡ ´Ù¸¥ °æ¿ì ÅäÇÈµµ ´Ş¶óÁø´Ù.
-	* Topic ID : topic¿¡ ºÎ¿©ÇÑ ½Äº°¹øÈ£(À¯ÀÏÅ°)
+	* IRTDUpdateEvent, IRtdServer : ì—‘ì…€ì—ì„œ RTDìš©ìœ¼ë¡œ ì •ì˜í•œ ì¸í„°í˜ì´ìŠ¤ì´ê¸° ë•Œë¬¸ì— ë©”ì„œë“œ, iid ë“±ì˜ ë³€ê²½ì„ í•´ì„œëŠ” ì•ˆëœë‹¤.
+	* Topic : ì—‘ì…€ì—ì„œ RTD serverì— ì •ë³´ë¥¼ ìš”ì²­í•˜ëŠ”ë° ì´ë¥¼ topicë¼ê³  ë¶€ë¥¸ë‹¤. 
+			ì—‘ì…€ ì…€ì—ì„œ RTDí•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ì—¬ ë°ì´í„°ë¥¼ ìš”ì²­í•˜ëŠ”ë° ì´ë•Œ ìš”ì²­í•˜ëŠ” ë°ì´í„°ê°€ ë™ì¼í•œ ê²½ìš° í† í”½ë„ ë™ì¼í•˜ë©°,
+			ìš”ì²­í•˜ëŠ” ë°ì´í„°ê°€ ë‹¤ë¥¸ ê²½ìš° í† í”½ë„ ë‹¬ë¼ì§„ë‹¤.
+	* Topic ID : topicì— ë¶€ì—¬í•œ ì‹ë³„ë²ˆí˜¸(ìœ ì¼í‚¤)
+			* TopicIDëŠ” Process(Excel.exe) ë‹¨ìœ„ë¡œ ìœ ì¼í•œ ê°’ì´ë‹¤.
 
-	* TopicÀÇ ÀÌÇØ
+	* Topicì˜ ì´í•´
 
-			¹øÈ£	A								B								C
+			ë²ˆí˜¸	A								B								C
 			-------	------------------------------	------------------------------	------------------------------
-			1		=RTD("progid",,"¿µ±¹½Ã°¢")		=RTD("progid",,"¿µ±¹½Ã°¢")		=RTD("progid",,"ÇÑ±¹½Ã°¢")
+			1		=RTD("progid",,"ì˜êµ­ì‹œê°")		=RTD("progid",,"ì˜êµ­ì‹œê°")		=RTD("progid",,"í•œêµ­ì‹œê°")
 
-			À§¿Í °°ÀÌ A1¼¿°ú B1¼¿Àº ¿äÃ»°ªÀÌ '¿µ±¹½Ã°¢'À¸·Î µ¿ÀÏÇÏ±â ¶§¹®¿¡ ÅäÇÈID ¶ÇÇÑ µ¿ÀÏÇÏ´Ù.
-			C1¼¿ÀÇ °æ¿ì¿¡´Â 'ÇÑ±¹½Ã°¢'À¸·Î ¿äÃ»°ªÀÌ ´Ù¸£±â ¶§¹®¿¡ ÅäÇÈID ¶ÇÇÑ ´Ù¸£´Ù.	
+			ìœ„ì™€ ê°™ì´ A1ì…€ê³¼ B1ì…€ì€ ìš”ì²­ê°’ì´ 'ì˜êµ­ì‹œê°'ìœ¼ë¡œ ë™ì¼í•˜ê¸° ë•Œë¬¸ì— í† í”½ID ë˜í•œ ë™ì¼í•˜ë‹¤.
+			C1ì…€ì˜ ê²½ìš°ì—ëŠ” 'í•œêµ­ì‹œê°'ìœ¼ë¡œ ìš”ì²­ê°’ì´ ë‹¤ë¥´ê¸° ë•Œë¬¸ì— í† í”½ID ë˜í•œ ë‹¤ë¥´ë‹¤.	
 */
 
 
@@ -102,9 +103,13 @@ interface IRtdServer : IDispatch {
 	@remark		Called when Excel requests the first RTD topic for the server. ServerStart should return a 1 on success, and a 
 				negative value or 0 on failure. The first parameter of the ServerStart method is a callback object that the RealTimeData server
 				uses to notify Excel when it should gather updates from the RealTimeData server.
-				1¹øÂ° RTD topicÀ» ¿äÃ»ÇÒ¶§ È£ÃâµÇ´Â ¸Ş¼­µå·Î Á¤»óÃ³¸®ÇÑ °æ¿ì 1À» Ã³¸®¿¡ ½ÇÆĞÇÑ °æ¿ì¿¡´Â 0 ÀÌÇÏÀÇ °ªÀ» ¸®ÅÏÇÑ´Ù.
-				1¹øÂ° ÀÎÀÚÀÎ callbackObject(IRTDUpdateEvent)´Â Äİ¹é°´Ã¼·Î RTD¼­¹ö¿¡¼­ ½Ç½Ã°£µ¥ÀÌÅÍ°¡ °»½ÅµÇ´Â °æ¿ì, 
-				ÀÌ¸¦ Excel¿¡ ¾Ë·Á µ¥ÀÌÅÍ¸¦ °»½ÅÇÏµµ·Ï ÇÏ´Â ¿ªÇÒÀ» ÇÑ´Ù.	
+				1ë²ˆì§¸ RTD topicì„ ìš”ì²­í• ë•Œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œë¡œ ì •ìƒì²˜ë¦¬í•œ ê²½ìš° 1ì„ ì²˜ë¦¬ì— ì‹¤íŒ¨í•œ ê²½ìš°ì—ëŠ” 0 ì´í•˜ì˜ ê°’ì„ ë¦¬í„´í•œë‹¤.
+				1ë²ˆì§¸ ì¸ìì¸ callbackObject(IRTDUpdateEvent)ëŠ” ì½œë°±ê°ì²´ë¡œ RTDì„œë²„ì—ì„œ ì‹¤ì‹œê°„ë°ì´í„°ê°€ ê°±ì‹ ë˜ëŠ” ê²½ìš°, 
+				ì´ë¥¼ Excelì— ì•Œë ¤ ë°ì´í„°ë¥¼ ê°±ì‹ í•˜ë„ë¡ í•˜ëŠ” ì—­í• ì„ í•œë‹¤.	
+				
+			ServerStart, ServerTerminateëŠ” Excelí”„ë¡œì„¸ìŠ¤ì˜ ìƒëª…ì£¼ê¸°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í˜¸ì¶œëœë‹¤.
+			ì¦‰, ì—‘ì…€í”„ë¡œì„¸ìŠ¤ê°€ ì‹œì‘ë˜ê³  ìµœì´ˆ topicì´ ìš”ì²­ë ë•Œ ServerStartê°€ í˜¸ì¶œë˜ê³ ,
+			topicì´ disconnectë˜ê±°ë‚˜ í”„ë¡œì„¸ìŠ¤ê°€ ì¢…ë£Œë  ë•Œ ServerTerminateê°€ í˜¸ì¶œëœë‹¤.
 	*/
     [id(0x0000000a), helpcontext(0x0007a125)]
     HRESULT ServerStart(
@@ -117,13 +122,13 @@ interface IRtdServer : IDispatch {
 	@param		TopicID		: Required Integer, A unique value, assigned by Microsoft Excel, which identifies the topic.
 	@param		Strings		: Required Object. A single-dimensional array of strings identifying the topic.
 	@param		GetNewValues: Required Boolean. True to determine if new values are to be acquired.
-								Cell¿¡ ÀÌ¹Ì RTD°ª(¸®ÅÏ°ª)ÀÌ ¼³Á¤µÈ °æ¿ì, GetNewValues¸¦ True·Î ¼³Á¤ÇÏ¸é ´Ù½Ã »õ RTD°ªÀ¸·Î ¼³Á¤ÇÏ°í
-								False·Î ÇÏ¸é ÀÌÀü¿¡ ¼³Á¤µÈ °ªÀ» ±×´ë·Î »ç¿ëÇÑ´Ù.
-								´Ü, ÇØ´ç µ¿ÀÛÀº ÀúÀåµÈ ¿¢¼¿ÆÄÀÏÀ» ´Ù½Ã ¿­¶§¿¡¸¸ µ¿ÀÛÇÏ´Â °ÍÀ¸·Î È®ÀÎµÇ¾úÀ½.
-								Áï, ÀúÀåµÈ ¿¢¼¿ÆÄÀÏÀ» ´Ù½Ã ¿­¶§¸¶´Ù RTD°ªÀÌ °»½ÅÀÌ µÇ¾î¾ß ÇÏ´Â °æ¿ì¿¡´Â ¹İµå½Ã ÇØ´ç °ªÀ» True·Î ¼³Á¤ÇØ¾ß ÇÑ´Ù.
+								Cellì— ì´ë¯¸ RTDê°’(ë¦¬í„´ê°’)ì´ ì„¤ì •ëœ ê²½ìš°, GetNewValuesë¥¼ Trueë¡œ ì„¤ì •í•˜ë©´ ë‹¤ì‹œ ìƒˆ RTDê°’ìœ¼ë¡œ ì„¤ì •í•˜ê³ 
+								Falseë¡œ í•˜ë©´ ì´ì „ì— ì„¤ì •ëœ ê°’ì„ ê·¸ëŒ€ë¡œ ì‚¬ìš©í•œë‹¤.
+								ë‹¨, í•´ë‹¹ ë™ì‘ì€ ì €ì¥ëœ ì—‘ì…€íŒŒì¼ì„ ë‹¤ì‹œ ì—´ë•Œì—ë§Œ ë™ì‘í•˜ëŠ” ê²ƒìœ¼ë¡œ í™•ì¸ë˜ì—ˆìŒ.
+								ì¦‰, ì €ì¥ëœ ì—‘ì…€íŒŒì¼ì„ ë‹¤ì‹œ ì—´ë•Œë§ˆë‹¤ RTDê°’ì´ ê°±ì‹ ì´ ë˜ì–´ì•¼ í•˜ëŠ” ê²½ìš°ì—ëŠ” ë°˜ë“œì‹œ í•´ë‹¹ ê°’ì„ Trueë¡œ ì„¤ì •í•´ì•¼ í•œë‹¤.
 	@returns	pvarOut
 	@remarks	Called whenever Excel requests a new RTD topic from the RealTimeData server.	
-				¿¢¼¿¿¡¼­ »õ ÅäÇÈÀ» ¿äÃ»ÇÒ ¶§¸¶´Ù È£ÃâµÈ´Ù.
+				ì—‘ì…€ì—ì„œ ìƒˆ í† í”½ì„ ìš”ì²­í•  ë•Œë§ˆë‹¤ í˜¸ì¶œëœë‹¤.
 	*/
     [id(0x0000000b), helpcontext(0x0007a126)]
     HRESULT ConnectData(
@@ -140,8 +145,8 @@ interface IRtdServer : IDispatch {
 
 				Called when Excel is requesting a refresh on topics. RefreshData is called after the server notifies Excel that updates exist,
 				and it returns a count of the topics to update along with the topic id and value for each topic.
-				Excel¿¡¼­ RTDµ¥ÀÌÅÍ(topics)¸¦ °»½ÅÇÏ·ÁÇÒ¶§ È£ÃâµÈ´Ù. 
-				ÀÌ´Â RTD¼­¹ö¿¡¼­ Excel¿¡ ½Ç½Ã°£µ¥ÀÌÅÍ°¡ °»½ÅµÊÀ» ¾Ë¸®°í, Excel¿¡¼­ ´Ù½Ã RTD¼­¹ö¿¡ °»½ÅµÈ µ¥ÀÌÅÍ¸¦ ´Ş¶ó°í ¿äÃ»ÇÏ´Â ±¸Á¶ÀÌ´Ù.
+				Excelì—ì„œ RTDë°ì´í„°(topics)ë¥¼ ê°±ì‹ í•˜ë ¤í• ë•Œ í˜¸ì¶œëœë‹¤. 
+				ì´ëŠ” RTDì„œë²„ì—ì„œ Excelì— ì‹¤ì‹œê°„ë°ì´í„°ê°€ ê°±ì‹ ë¨ì„ ì•Œë¦¬ê³ , Excelì—ì„œ ë‹¤ì‹œ RTDì„œë²„ì— ê°±ì‹ ëœ ë°ì´í„°ë¥¼ ë‹¬ë¼ê³  ìš”ì²­í•˜ëŠ” êµ¬ì¡°ì´ë‹¤.
 	*/
     [id(0x0000000c), helpcontext(0x0007a127)]
     HRESULT RefreshData(
@@ -153,7 +158,7 @@ interface IRtdServer : IDispatch {
 	@param		TopicID	: Required Integer. A unique value assigned to the topic assigned by Microsoft Excel.
 	@return		
 	@remarks	Called whenever Excel no longer requires a specific topic.
-				Æ¯Á¤ ÅäÇÈÀÌ ´õ ÀÌ»ó ÇÊ¿äÇÏÁö ¾ÊÀ» ¶§ È£ÃâµÈ´Ù. Áï, ¿¢¼¿¿¡¼­ RTD¼¿ÀÌ ¾ø¾îÁú ¶§(´õ ÀÌ»ó °ªÀ» Ç¥½ÃÇÒ ÇÊ¿ä°¡ ¾øÀ» ¶§) È£ÃâµÈ´Ù.
+				íŠ¹ì • í† í”½ì´ ë” ì´ìƒ í•„ìš”í•˜ì§€ ì•Šì„ ë•Œ í˜¸ì¶œëœë‹¤. ì¦‰, ì—‘ì…€ì—ì„œ RTDì…€ì´ ì—†ì–´ì§ˆ ë•Œ(ë” ì´ìƒ ê°’ì„ í‘œì‹œí•  í•„ìš”ê°€ ì—†ì„ ë•Œ) í˜¸ì¶œëœë‹¤.
 	*/
     [id(0x0000000d), helpcontext(0x0007a128)]
     HRESULT DisconnectData([in] long TopicID);
@@ -162,7 +167,7 @@ interface IRtdServer : IDispatch {
 	@brief		Determines if the real-time data server is still active. Zero or negative number indicates failure; a positive number indicates that the server is active.	
 	@returns	pfRes
 	@remarks	Called by Excel if a given interval has elapsed since the last time Excel was notified of updates from the RealTimeData server.
-				¸¶Áö¸· ¾÷µ¥ÀÌÆ®°¡ ¹ß»ıÇÑ ÀÌÈÄ¿¡ ÁöÁ¤ÇÑ ½Ã°£ÀÌ °æ°úÇÏ¸é ÇØ´ç ¸Ş¼­µå°¡ È£ÃâµË´Ï´Ù.		
+				ë§ˆì§€ë§‰ ì—…ë°ì´íŠ¸ê°€ ë°œìƒí•œ ì´í›„ì— ì§€ì •í•œ ì‹œê°„ì´ ê²½ê³¼í•˜ë©´ í•´ë‹¹ ë©”ì„œë“œê°€ í˜¸ì¶œë©ë‹ˆë‹¤.		
 	*/
     [id(0x0000000e), helpcontext(0x0007a129)]
     HRESULT Heartbeat([out, retval] long* pfRes);
@@ -172,7 +177,7 @@ interface IRtdServer : IDispatch {
 	@param		
 	@return		
 	@remarks	Called when Excel no longer requires RTD topics from the RealTimeData Server.
-				Excel¿¡¼­ ´õ ÀÌ»ó RTD¸¦ »ç¿ëÇÏÁö ¾ÊÀ»¶§(RTD¼­¹ö°¡ ÇÊ¿ä¾øÀ»¶§) È£ÃâµÈ´Ù.
+				Excelì—ì„œ ë” ì´ìƒ RTDë¥¼ ì‚¬ìš©í•˜ì§€ ì•Šì„ë•Œ(RTDì„œë²„ê°€ í•„ìš”ì—†ì„ë•Œ) í˜¸ì¶œëœë‹¤.
 	*/
     [id(0x0000000f), helpcontext(0x0007a12a)]
     HRESULT ServerTerminate();
